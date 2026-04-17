@@ -115,6 +115,107 @@ body {
   border-bottom: 1px solid rgba(154, 165, 123, 0.18);
 }
 
+/* ───────────────────────────── HEADER RESPONSIVE */
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  padding: 0 40px;
+  position: relative;
+}
+
+.header-logo { display: flex; align-items: center; gap: 12px; background: none; border: none; cursor: pointer; padding: 0; }
+
+.header-nav-wrap {
+  display: flex;
+  background: rgba(154,165,123,0.08);
+  padding: 5px;
+  borderRadius: 18px;
+  gap: 3px;
+  border: 1px solid rgba(154,165,123,0.15);
+  border-radius: 18px;
+}
+
+.header-actions { display: flex; align-items: center; gap: 12px; }
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: 1.5px solid var(--n-200);
+  border-radius: 12px;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+.hamburger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--charcoal);
+  border-radius: 2px;
+  transition: all 0.25s;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile nav drawer */
+.mobile-drawer {
+  display: none;
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
+  background: rgba(247,246,242,0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--n-200);
+  padding: 16px 20px 28px;
+  z-index: 999;
+  flex-direction: column;
+  gap: 8px;
+  animation: fadeIn 0.2s ease;
+}
+.mobile-drawer.open { display: flex; }
+
+.mobile-nav-btn {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: none;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s;
+  background: transparent;
+  color: var(--n-500);
+}
+.mobile-nav-btn:hover { background: rgba(57,120,106,0.06); color: var(--forest); }
+.mobile-nav-btn.active { background: var(--charcoal); color: white; }
+
+.mobile-drawer-divider { height: 1px; background: var(--n-100); margin: 8px 0; }
+
+.mobile-drawer-cta { margin-top: 4px; }
+
+@media (max-width: 768px) {
+  .header-inner { padding: 0 16px; }
+  .header-nav-wrap { display: none; }
+  .header-actions .btn { display: none; }
+  .header-actions .user-name { display: none; }
+  .hamburger { display: flex; }
+}
+
 /* ───────────────────────────── CARD */
 .card {
   background: var(--white);
@@ -247,6 +348,19 @@ body {
   animation: fadeIn 0.2s ease;
 }
 
+/* Modal inside overlay — always fluid on mobile */
+.modal-box {
+  background: white;
+  border-radius: var(--r-xl);
+  padding: 48px 44px;
+  width: 100%;
+  box-shadow: 0 32px 80px -16px rgba(28,28,30,0.22);
+}
+@media (max-width: 640px) {
+  .overlay { padding: 16px; align-items: flex-end; }
+  .modal-box { padding: 32px 24px; border-radius: var(--r-lg); }
+}
+
 /* ───────────────────────────── TABS */
 .tab-nav {
   display: flex;
@@ -278,6 +392,10 @@ body {
 .tab-btn:hover { color: var(--charcoal); }
 .tab-btn.active { color: var(--forest); border-bottom-color: var(--forest); }
 
+@media (max-width: 640px) {
+  .tab-btn { font-size: 11px; margin-right: 20px; }
+}
+
 /* ───────────────────────────── BADGES */
 .badge {
   display: inline-flex;
@@ -298,7 +416,9 @@ body {
 .badge-live    { background: rgba(16,185,129,0.12);  color: #065f46; }
 
 /* ───────────────────────────── DATA TABLE */
-.data-table { width: 100%; border-collapse: collapse; }
+.table-scroll-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+.data-table { width: 100%; border-collapse: collapse; min-width: 480px; }
 .data-table thead tr { background: var(--n-50); }
 .data-table th {
   padding: 14px 28px;
@@ -312,6 +432,11 @@ body {
 .data-table tbody tr { border-top: 1px solid var(--n-100); transition: background 0.15s; }
 .data-table tbody tr:hover { background: rgba(154,165,123,0.04); }
 .data-table td { padding: 24px 28px; vertical-align: middle; }
+
+@media (max-width: 640px) {
+  .data-table th,
+  .data-table td { padding: 14px 16px; }
+}
 
 /* ───────────────────────────── PROGRESS */
 .progress-bar { height: 6px; background: var(--n-100); border-radius: var(--r-full); overflow: hidden; }
@@ -378,3 +503,143 @@ body {
 }
 .log-time { min-width: 148px; color: var(--n-400); }
 .log-type { min-width: 48px; font-weight: 800; }
+
+/* ───────────────────────────── RESPONSIVE GRID UTILITIES */
+/* Use these classes to replace inline gridTemplateColumns */
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+.grid-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.grid-dashboard-main {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .grid-4          { grid-template-columns: repeat(2, 1fr); }
+  .grid-3          { grid-template-columns: repeat(2, 1fr); }
+  .grid-hero       { grid-template-columns: 1fr; gap: 48px; }
+  .grid-dashboard-main { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .grid-4          { grid-template-columns: 1fr; gap: 14px; }
+  .grid-3          { grid-template-columns: 1fr; gap: 14px; }
+  .grid-2          { grid-template-columns: 1fr; gap: 14px; }
+  .grid-hero       { gap: 32px; }
+}
+
+/* ───────────────────────────── RESPONSIVE DISPLAY HEADING */
+.display-heading-xl {
+  font-family: var(--font-display);
+  font-size: 52px;
+  line-height: 1;
+}
+.display-heading-lg {
+  font-family: var(--font-display);
+  font-size: 48px;
+  line-height: 1;
+}
+@media (max-width: 1024px) {
+  .display-heading-xl { font-size: 38px; }
+  .display-heading-lg { font-size: 34px; }
+}
+@media (max-width: 640px) {
+  .display-heading-xl { font-size: 28px; }
+  .display-heading-lg { font-size: 26px; }
+}
+
+/* ───────────────────────────── RESPONSIVE FLEX STACK */
+/* Row on desktop, column on mobile */
+.flex-row-stack {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+@media (max-width: 640px) {
+  .flex-row-stack { flex-direction: column; align-items: stretch; }
+}
+
+/* Space-between row → stack on mobile */
+.flex-between-stack {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+@media (max-width: 640px) {
+  .flex-between-stack { flex-direction: column; align-items: flex-start; }
+}
+
+/* ───────────────────────────── CARD PANEL ROW (vetting / withdrawal) */
+/* Avatar + content in a row, stacks on mobile */
+.panel-card-row {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+@media (max-width: 640px) {
+  .panel-card-row { flex-direction: column; gap: 16px; }
+}
+
+/* ───────────────────────────── TOAST RESPONSIVE */
+@media (max-width: 480px) {
+  /* Override inline styles on Toast via a utility class you add to it */
+  .toast-responsive {
+    bottom: 16px !important;
+    right: 16px !important;
+    left: 16px !important;
+    max-width: unset !important;
+  }
+}
+
+/* ───────────────────────────── HOMEPAGE PHILOSOPHY SECTION */
+@media (max-width: 640px) {
+  .philosophy-cta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .philosophy-cta .btn { width: 100%; }
+}
+
+/* ───────────────────────────── SESSION CARD ROW (ScheduleManager) */
+.session-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--n-100);
+  flex-wrap: wrap;
+}
+@media (max-width: 640px) {
+  .session-row { padding: 16px; gap: 12px; }
+  .session-row-actions { width: 100%; display: flex; gap: 8px; margin-top: 4px; }
+}
+
+/* ───────────────────────────── EARNINGS GRID */
+.earnings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+@media (max-width: 768px) {
+  .earnings-grid { grid-template-columns: 1fr; }
+}

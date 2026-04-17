@@ -15,7 +15,8 @@ const CHART_DATA = [
 ]
 
 const PerformanceTab: React.FC = () => (
-  <div className="animate-fade-up" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+  // grid-2 collapses to 1-col on mobile via global.css
+  <div className="animate-fade-up grid-2">
 
     {/* Session Volume Chart */}
     <div className="card" style={{ padding: '36px' }}>
@@ -52,7 +53,6 @@ const PerformanceTab: React.FC = () => (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         {TOP_THERAPISTS.map((t, i) => (
           <div key={t.name} style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            {/* Rank */}
             <span style={{
               flexShrink: 0, width: 24, textAlign: 'center',
               fontSize: 13, fontWeight: 800,
@@ -60,7 +60,6 @@ const PerformanceTab: React.FC = () => (
             }}>
               #{i + 1}
             </span>
-            {/* Avatar */}
             <div style={{
               flexShrink: 0, width: 40, height: 40, borderRadius: '50%',
               background: 'rgba(57,120,106,0.1)',
@@ -69,14 +68,12 @@ const PerformanceTab: React.FC = () => (
             }}>
               {t.initials}
             </div>
-            {/* Name + sessions */}
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {t.name}
               </div>
               <div style={{ fontSize: 11, color: 'var(--n-400)' }}>{t.sessions} sessions</div>
             </div>
-            {/* Score */}
             <div style={{
               flexShrink: 0, padding: '4px 12px',
               borderRadius: 'var(--r-full)',

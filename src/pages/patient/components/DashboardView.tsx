@@ -1,6 +1,5 @@
 // src/pages/patient/components/DashboardView.tsx
 // API: GET /Patient/dashboard/{userId}, GET /Sessions/upcoming/{patientId}, GET /Wallet/balance/{userId}
-// UI is identical to original; only data source changed to real APIs.
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '../../../context/AuthContext'
@@ -12,7 +11,7 @@ import WalletCard from './WalletCard'
 import { fmtSlot, timeUntil, initials } from './Shared'
 import type { DashboardResponse, UpcomingSession, WalletBalance } from '../../../types'
 
-// ── Upcoming session card (Zoom link from real backend) ───────────
+// ── Upcoming session card ─────────────────────────────────────────
 const UpcomingSessionCard: React.FC<{ session: UpcomingSession }> = ({ session }) => {
   const { dateShort, time } = fmtSlot(session.sessionDate)
   const msUntil  = new Date(session.sessionDate).getTime() - Date.now()
@@ -38,8 +37,6 @@ const UpcomingSessionCard: React.FC<{ session: UpcomingSession }> = ({ session }
       <div style={{ fontSize: 11, color: 'var(--n-400)', marginBottom: 14 }}>
         {session.sessionType} · ${session.amount}
       </div>
-
-      {/* meetLink comes from real Zoom API (auto-created on booking) */}
       {session.meetLink ? (
         <div>
           <a
@@ -147,10 +144,11 @@ const DashboardView: React.FC<Props> = ({ onFindNew, refreshKey }) => {
 
   return (
     <div className="page animate-fade-up">
-      {/* Header row */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 44, flexWrap: 'wrap', gap: 20 }}>
+      {/* ── Header row ── */}
+      {/* flex-between-stack stacks to column on mobile */}
+      <div className="flex-between-stack" style={{ marginBottom: 44 }}>
         <div>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 52, color: 'var(--charcoal)', marginBottom: 8 }}>
+          <h2 className="display-heading-lg" style={{ color: 'var(--charcoal)', marginBottom: 8 }}>
             Hello, {firstName}
           </h2>
           {dashboard && (
@@ -160,22 +158,21 @@ const DashboardView: React.FC<Props> = ({ onFindNew, refreshKey }) => {
             </p>
           )}
         </div>
-        <div style={{ display: 'flex', gap: 12 }}>
+        <div className="flex-row-stack">
           <button className="btn btn-outline">Care Plan PDF</button>
           <button className="btn btn-forest" onClick={onFindNew}>Find New Clinician</button>
         </div>
       </div>
 
-
-      {/* Main grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24, marginBottom: 28 }}>
-        {/* Active Care Roadmap — activeClinician from backend */}
+      {/* ── Main grid: 2fr 1fr → collapses to 1-col on tablet ── */}
+      <div className="grid-dashboard-main" style={{ marginBottom: 28 }}>
+        {/* Active Care Roadmap */}
         <div className="card card-dark" style={{ padding: '40px', color: 'white' }}>
           <div style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3em', opacity: 0.35, marginBottom: 28 }}>Active Care Roadmap</div>
           {dashboard?.activeClinician ? (
             <>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 40 }}>
-                <div style={{ width: 72, height: 72, borderRadius: '50%', border: '3px solid rgba(154,165,123,0.4)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.08)', fontWeight: 800, fontSize: 18 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 40, flexWrap: 'wrap' }}>
+                <div style={{ width: 72, height: 72, borderRadius: '50%', border: '3px solid rgba(154,165,123,0.4)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.08)', fontWeight: 800, fontSize: 18, flexShrink: 0 }}>
                   {dashboard.activeClinician.avatarUrl && dashboard.activeClinician.avatarUrl !== '/images/default-avatar.png'
                     ? <img src={dashboard.activeClinician.avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     : initials(dashboard.activeClinician.clinicianName)
@@ -191,6 +188,7 @@ const DashboardView: React.FC<Props> = ({ onFindNew, refreshKey }) => {
                   </p>
                 </div>
               </div>
+              {/* 3-col inside dark card → wraps naturally on small screens */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 28 }}>
                 {[
                   { l: 'Specialty', v: dashboard.activeClinician.specialty },
@@ -236,9 +234,9 @@ const DashboardView: React.FC<Props> = ({ onFindNew, refreshKey }) => {
         </div>
       </div>
 
-      {/* Upcoming Sessions */}
+      {/* ── Upcoming Sessions ── */}
       <div className="card" style={{ padding: '28px 32px', marginBottom: 20 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 10 }}>
           <h4 style={{ fontWeight: 800, fontSize: 16, letterSpacing: '-0.01em' }}>Upcoming Sessions</h4>
           <span className="badge badge-live">{upcomingSessions.length > 0 ? `${upcomingSessions.length} scheduled` : 'None'}</span>
         </div>
@@ -254,20 +252,20 @@ const DashboardView: React.FC<Props> = ({ onFindNew, refreshKey }) => {
         )}
       </div>
 
-      {/* Past sessions */}
+      {/* ── Past sessions ── */}
       {(dashboard?.pastSessions?.length ?? 0) > 0 && (
         <div className="card" style={{ padding: '28px 32px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 10 }}>
             <h4 style={{ fontWeight: 800, fontSize: 16, letterSpacing: '-0.01em' }}>Previous Sessions</h4>
             <span className="badge badge-sage">{dashboard!.pastSessions.length} completed</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             {dashboard!.pastSessions.map(s => (
-              <div key={s.sessionId} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '14px 0', borderBottom: '1px solid var(--n-100)' }}>
+              <div key={s.sessionId} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '14px 0', borderBottom: '1px solid var(--n-100)', flexWrap: 'wrap' }}>
                 <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: s.status === 'Cancelled' ? 'rgba(239,68,68,0.08)' : 'rgba(16,185,129,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>
                   {s.status === 'Cancelled' ? '✕' : '✓'}
                 </div>
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 1, minWidth: 120 }}>
                   <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 2 }}>{s.clinicianName}</div>
                   <div style={{ fontSize: 11, color: 'var(--n-400)' }}>{s.sessionType}</div>
                 </div>
@@ -280,8 +278,8 @@ const DashboardView: React.FC<Props> = ({ onFindNew, refreshKey }) => {
           </div>
         </div>
       )}
-      
-      {/* Wallet */}
+
+      {/* ── Wallet ── */}
       <WalletCard
         wallet={wallet} isLoading={walletLoading}
         showTopUp={showTopUp} setShowTopUp={setShowTopUp}

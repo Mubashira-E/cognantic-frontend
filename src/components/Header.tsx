@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import type { ViewType, AuthRole } from '../types/app'
 
 interface Props {
@@ -29,6 +29,18 @@ const Header: React.FC<Props> = ({
   view, setView, openAuth,
   isAuthenticated = false, userName, onLogout,
 }) => {
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  // Close drawer on resize back to desktop
+  useEffect(() => {
+    const onResize = () => { if (window.innerWidth > 768) setMenuOpen(false) }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
+  // Close drawer when view changes (user tapped a nav item)
+  useEffect(() => { setMenuOpen(false) }, [view])
+
   const handleNav = (id: string) => {
     if (id === 'patient-auth') {
       isAuthenticated ? setView('patient') : openAuth('patient')
@@ -37,6 +49,7 @@ const Header: React.FC<Props> = ({
     } else {
       setView(id as ViewType)
     }
+    setMenuOpen(false)
   }
 
   const isActive = (id: string) => {
@@ -46,88 +59,129 @@ const Header: React.FC<Props> = ({
   }
 
   return (
-    <header
-      className="glass-header"
-      style={{
-        position: 'fixed', top: 0, width: '100%', zIndex: 1000,
-        padding: '0 40px', height: 80,
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      }}
-    >
-      <button
-        onClick={() => setView('home')}
-        style={{
-          display: 'flex', alignItems: 'center', gap: 12,
-          background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-        }}
-      >
-        <div style={{
-          width: 42, height: 42, background: 'var(--forest)', borderRadius: 13,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 2px 8px rgba(57,120,106,0.35)',
-        }}>
-          <LogoMark size={22} />
-        </div>
-        <span style={{
-          fontFamily: 'var(--font-sans)', fontWeight: 800, fontSize: 17,
-          letterSpacing: '-0.02em', color: 'var(--charcoal)',
-        }}>
-          COGNANTIC
-        </span>
-      </button>
+    <>
+      <header className="glass-header" style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000 }}>
+        <div className="header-inner">
 
-      <nav style={{
-        display: 'flex', background: 'rgba(154,165,123,0.08)',
-        padding: '5px', borderRadius: 18, gap: 3,
-        border: '1px solid rgba(154,165,123,0.15)',
-      }}>
+          {/* ── Logo ── */}
+          <button className="header-logo" onClick={() => handleNav('home')}>
+            <div style={{
+              width: 42, height: 42, background: 'var(--forest)', borderRadius: 13,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(57,120,106,0.35)',
+              flexShrink: 0,
+            }}>
+              <LogoMark size={22} />
+            </div>
+            <span style={{
+              fontFamily: 'var(--font-sans)', fontWeight: 800, fontSize: 17,
+              letterSpacing: '-0.02em', color: 'var(--charcoal)',
+            }}>
+              COGNANTIC
+            </span>
+          </button>
+
+          {/* ── Desktop Nav ── */}
+          <nav className="header-nav-wrap">
+            {NAV_ITEMS.map(item => (
+              <button
+                key={item.id}
+                onClick={() => handleNav(item.id)}
+                style={{
+                  padding: '9px 20px', borderRadius: 13, border: 'none',
+                  fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: 11,
+                  letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  background: isActive(item.id) ? 'var(--charcoal)' : 'transparent',
+                  color:      isActive(item.id) ? 'white' : 'var(--n-500)',
+                  boxShadow:  isActive(item.id) ? '0 3px 10px rgba(28,28,30,0.18)' : 'none',
+                }}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
+
+          {/* ── Desktop Actions ── */}
+          <div className="header-actions">
+            {isAuthenticated ? (
+              <>
+                {userName && (
+                  <span className="user-name" style={{
+                    fontSize: 13, fontWeight: 600, color: 'var(--n-600)',
+                    maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  }}>
+                    {userName}
+                  </span>
+                )}
+                <button
+                  className="btn btn-outline"
+                  onClick={onLogout}
+                  style={{ padding: '9px 20px', fontSize: 11 }}
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <button
+                className="btn btn-forest"
+                onClick={() => openAuth('patient')}
+                style={{ padding: '11px 26px' }}
+              >
+                Get Started
+              </button>
+            )}
+
+            {/* ── Hamburger (mobile only) ── */}
+            <button
+              className={`hamburger ${menuOpen ? 'open' : ''}`}
+              onClick={() => setMenuOpen(o => !o)}
+              aria-label="Toggle menu"
+            >
+              <span /><span /><span />
+            </button>
+          </div>
+
+        </div>
+      </header>
+
+      {/* ── Mobile Drawer ── */}
+      <div className={`mobile-drawer ${menuOpen ? 'open' : ''}`}>
         {NAV_ITEMS.map(item => (
           <button
             key={item.id}
+            className={`mobile-nav-btn ${isActive(item.id) ? 'active' : ''}`}
             onClick={() => handleNav(item.id)}
-            style={{
-              padding: '9px 20px', borderRadius: 13, border: 'none',
-              fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: 11,
-              letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer',
-              transition: 'all 0.2s',
-              background: isActive(item.id) ? 'var(--charcoal)' : 'transparent',
-              color:      isActive(item.id) ? 'white' : 'var(--n-500)',
-              boxShadow:  isActive(item.id) ? '0 3px 10px rgba(28,28,30,0.18)' : 'none',
-            }}
           >
             {item.label}
           </button>
         ))}
-      </nav>
 
-      {isAuthenticated ? (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          {userName && (
-            <span style={{
-              fontSize: 13, fontWeight: 600, color: 'var(--n-600)',
-              maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-            }}>
-              {userName}
-            </span>
+        <div className="mobile-drawer-divider" />
+
+        <div className="mobile-drawer-cta">
+          {isAuthenticated ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {userName && (
+                <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--n-600)', paddingLeft: 4 }}>
+                  {userName}
+                </p>
+              )}
+              <button className="btn btn-outline btn-full" onClick={() => { onLogout?.(); setMenuOpen(false) }}>
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <button
+              className="btn btn-forest btn-full"
+              onClick={() => { openAuth('patient'); setMenuOpen(false) }}
+            >
+              Get Started
+            </button>
           )}
-          <button
-            className="btn btn-outline"
-            onClick={onLogout}
-            style={{ padding: '9px 20px', fontSize: 11 }}
-          >
-            Sign Out
-          </button>
         </div>
-      ) : (
-        <button
-          className="btn btn-forest"
-          onClick={() => openAuth('patient')}
-          style={{ padding: '11px 26px' }}
-        >
-          Get Started
-        </button>
-      )}
-    </header>
+      </div>
+    </>
   )
 }
 

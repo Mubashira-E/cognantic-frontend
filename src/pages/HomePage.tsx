@@ -22,8 +22,8 @@ const FEATURES = [
 const HomePage: React.FC<Props> = ({ openAuth, setView }) => (
   <div className="page">
 
-    {/* HERO */}
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center', marginBottom: 100 }}>
+    {/* ── HERO ── */}
+    <div className="grid-hero" style={{ marginBottom: 80 }}>
       <div>
         <span style={{
           display: 'inline-flex', alignItems: 'center', gap: 10,
@@ -38,7 +38,7 @@ const HomePage: React.FC<Props> = ({ openAuth, setView }) => (
 
         <h1 style={{
           fontFamily: 'var(--font-display)',
-          fontSize: 'clamp(52px, 6.5vw, 84px)',
+          fontSize: 'clamp(40px, 6.5vw, 84px)',
           lineHeight: 0.88, letterSpacing: '-0.01em',
           marginBottom: 28, color: 'var(--charcoal)',
         }}>
@@ -67,7 +67,11 @@ const HomePage: React.FC<Props> = ({ openAuth, setView }) => (
             key={item.role}
             className="card hoverable"
             onClick={() => openAuth(item.role)}
-            style={{ padding: '28px 32px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 24, border: 'none', textAlign: 'left', width: '100%', background: 'white' }}
+            style={{
+              padding: '28px 32px', cursor: 'pointer', display: 'flex',
+              alignItems: 'center', gap: 24, border: 'none', textAlign: 'left',
+              width: '100%', background: 'white',
+            }}
           >
             <div style={{
               width: 68, height: 68, flexShrink: 0,
@@ -85,19 +89,19 @@ const HomePage: React.FC<Props> = ({ openAuth, setView }) => (
       </div>
     </div>
 
-    {/* STATS */}
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20, marginBottom: 64 }}>
+    {/* ── STATS ── */}
+    <div className="grid-3" style={{ marginBottom: 64 }}>
       {STATS.map(s => (
         <div key={s.label} className={`card ${s.dark ? 'card-dark' : ''}`} style={{ padding: '36px 40px', borderLeft: s.dark ? undefined : `4px solid ${s.accent}` }}>
           <div className="label" style={{ color: s.dark ? 'rgba(255,255,255,0.35)' : undefined, marginBottom: 14 }}>{s.label}</div>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: 52, color: s.dark ? 'white' : 'var(--charcoal)', lineHeight: 1 }}>{s.value}</div>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 4vw, 52px)', color: s.dark ? 'white' : 'var(--charcoal)', lineHeight: 1 }}>{s.value}</div>
           <div style={{ fontSize: 10, fontWeight: 700, color: s.subColor, textTransform: 'uppercase', letterSpacing: '0.15em', marginTop: 14 }}>{s.sub}</div>
         </div>
       ))}
     </div>
 
-    {/* FEATURES */}
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 20, marginBottom: 64 }}>
+    {/* ── FEATURES ── */}
+    <div className="grid-4" style={{ marginBottom: 64 }}>
       {FEATURES.map(f => (
         <div key={f.title} className="card" style={{ padding: '32px 28px' }}>
           <div style={{ fontSize: 32, marginBottom: 16 }}>{f.icon}</div>
@@ -107,13 +111,13 @@ const HomePage: React.FC<Props> = ({ openAuth, setView }) => (
       ))}
     </div>
 
-    {/* PHILOSOPHY */}
-    <div className="card" style={{ padding: '72px 60px', textAlign: 'center', background: 'rgba(154,165,123,0.05)', borderStyle: 'dashed', borderColor: 'rgba(154,165,123,0.4)' }}>
+    {/* ── PHILOSOPHY ── */}
+    <div className="card" style={{ padding: '72px 40px', textAlign: 'center', background: 'rgba(154,165,123,0.05)', borderStyle: 'dashed', borderColor: 'rgba(154,165,123,0.4)' }}>
       <p className="label" style={{ display: 'flex', justifyContent: 'center', marginBottom: 28, letterSpacing: '0.5em' }}>System Philosophy</p>
       <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(20px, 2.8vw, 36px)', fontStyle: 'italic', fontWeight: 400, color: 'var(--charcoal)', maxWidth: 700, margin: '0 auto', lineHeight: 1.4 }}>
         "The architecture of care is the foundation of recovery."
       </h2>
-      <div style={{ display: 'flex', justifyContent: 'center', gap: 32, marginTop: 48 }}>
+      <div className="philosophy-cta" style={{ display: 'flex', justifyContent: 'center', gap: 32, marginTop: 48, flexWrap: 'wrap' }}>
         <button className="btn btn-forest btn-lg" onClick={() => openAuth('patient')}>Begin Your Journey</button>
         <button className="btn btn-outline btn-lg" onClick={() => openAuth('therapist')}>Join as Clinician</button>
       </div>

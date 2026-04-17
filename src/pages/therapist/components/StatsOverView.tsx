@@ -17,7 +17,7 @@ const StatsOverview: React.FC<Props> = ({ planner, clinicianName }) => {
     <>
       {clinicianName && (
         <div style={{ marginBottom: 40 }}>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 48, color: 'var(--charcoal)', marginBottom: 8 }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 48px)', color: 'var(--charcoal)', marginBottom: 8 }}>
             Welcome, {clinicianName}
           </h2>
           <p style={{ color: 'var(--n-400)', fontSize: 15 }}>
@@ -25,7 +25,8 @@ const StatsOverview: React.FC<Props> = ({ planner, clinicianName }) => {
           </p>
         </div>
       )}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 20, marginBottom: 44 }}>
+      {/* grid-4 class collapses to 2-col on tablet, 1-col on mobile */}
+      <div className="grid-4" style={{ marginBottom: 44 }}>
         {STATS.map(s => (
           <div key={s.label} className={`card ${s.dark ? 'card-dark' : ''}`}
             style={{ padding: '28px 32px', borderLeft: s.dark ? 'none' : `4px solid ${BRAND[s.accent ?? 'sage']}` }}>

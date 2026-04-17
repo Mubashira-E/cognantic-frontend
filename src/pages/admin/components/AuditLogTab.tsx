@@ -1,7 +1,3 @@
-// src/pages/admin/components/AuditLogTab.tsx
-// Audit log tab for AdminPage.
-// Extracted for component-based architecture; UI identical to original.
-
 import React from 'react'
 
 const AUDIT_LOGS = [
@@ -23,36 +19,39 @@ const AuditLogTab: React.FC = () => (
           Immutable record of platform-level events.
         </p>
       </div>
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>Timestamp</th>
-            <th>Type</th>
-            <th>Event</th>
-          </tr>
-        </thead>
-        <tbody>
-          {AUDIT_LOGS.map((log, i) => (
-            <tr key={i}>
-              <td style={{ fontFamily: 'monospace', fontSize: 12, color: 'var(--n-400)', whiteSpace: 'nowrap' }}>
-                {log.time}
-              </td>
-              <td>
-                <span style={{
-                  padding: '3px 10px', borderRadius: 'var(--r-full)',
-                  background: `${log.color}18`,
-                  color: log.color,
-                  fontSize: 10, fontWeight: 700,
-                  textTransform: 'uppercase', letterSpacing: '0.1em',
-                }}>
-                  {log.type}
-                </span>
-              </td>
-              <td style={{ fontSize: 13, color: 'var(--n-600)' }}>{log.msg}</td>
+      {/* table-scroll-wrapper ensures horizontal scroll on mobile instead of layout break */}
+      <div className="table-scroll-wrapper">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Type</th>
+              <th>Event</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {AUDIT_LOGS.map((log, i) => (
+              <tr key={i}>
+                <td style={{ fontFamily: 'monospace', fontSize: 12, color: 'var(--n-400)', whiteSpace: 'nowrap' }}>
+                  {log.time}
+                </td>
+                <td>
+                  <span style={{
+                    padding: '3px 10px', borderRadius: 'var(--r-full)',
+                    background: `${log.color}18`,
+                    color: log.color,
+                    fontSize: 10, fontWeight: 700,
+                    textTransform: 'uppercase', letterSpacing: '0.1em',
+                  }}>
+                    {log.type}
+                  </span>
+                </td>
+                <td style={{ fontSize: 13, color: 'var(--n-600)' }}>{log.msg}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 )
